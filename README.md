@@ -1,4 +1,4 @@
-# Crossplane AWS S3 Deployment
+# AWS s3 Crossplane Deployment
 
 This project demonstrates deploying an S3 bucket in AWS using Crossplane on a Minikube Kubernetes cluster.
 
