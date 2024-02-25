@@ -1,15 +1,21 @@
 # Crossplane AWS S3 Deployment
 
-This project demonstrates deploying an S3 bucket in AWS using Crossplane on a Kubernetes cluster.
-Crossplane enables managing cloud infrastructure using Kubernetes resources, providing a unified API for provisioning and managing cloud services.
+This project demonstrates deploying an S3 bucket in AWS using Crossplane on a Minikube Kubernetes cluster.
 
 # Prerequisites
 
-* A Kubernetes cluster up and running.
+* Minikube installed and running.
+* Helm installed.
 * AWS CLI configured with the necessary credentials.
-* Crossplane installed.
 
+**Install Crossplane**
 
+Use helm to install crossplane
+
+```shell
+helm repo add crossplane-stable https://charts.crossplane.io/stable && helm repo update
+helm install crossplane crossplane-stable/crossplane --namespace crossplane-system --create-namespace
+```
 
 **Create a Kubernetes secret for AWS**
 
