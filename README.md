@@ -1,42 +1,50 @@
 # AWS s3 Crossplane Deployment
 
-This project demonstrates deploying an S3 bucket in AWS using Crossplane on a Minikube Kubernetes cluster.
+This project demonstrates deploying an AWS S3 bucket using Crossplane using Minikube Kubernetes cluster.
 
 # Prerequisites
 
-* Minikube installed and running.
-* Helm installed.
-* AWS CLI configured with the necessary credentials.
+* Minikube and Docker installed and running.
+* Helm CLI installed.
+* AWS CLI configured with the necessary S3 credentials.
+
+**Start Minikube**
+```shell
+minikube start --driver=docker
+```
 
 **Install Crossplane**
 
-Use helm to install crossplane
+Use Helm CLI to install crossplane
 
 ```shell
-helm repo add crossplane-stable https://charts.crossplane.io/stable && helm repo update
-helm install crossplane crossplane-stable/crossplane --namespace crossplane-system --create-namespace
+helm repo add crossplane-stable https://charts.crossplane.io/stable
+helm repo update
+helm install crossplane --namespace crossplane-system --create-namespace --version 1.15.0 crossplane-stable/crossplane
 ```
 
 **Create a Kubernetes secret for AWS**
 
-Add your `aws_access_key_id` and `aws_secret_access_key` to AWS credentials to the `aws-credentials.txt`.
+Add your `aws_access_key_id` and `aws_secret_access_key` credentials to the `aws-credentials.txt`.
 
 ```shell
 kubectl create secret generic aws-secret -n crossplane-system --from-file=creds=./aws-credentials.txt
 ```
 
-**Apply AWS s3 provider config**
+**Create AWS S3 Bucket using Crossplane**
+
+*Apply AWS providers*
 
 ```shell
-kubectl apply -f manifests/aws-s3-provider-config.yaml
+kubectl apply -f crossplane/provider-aws-s3.yaml
 ```
-
-**Apply AWS s3 manifests to K8S**
-
 ```shell
-kubectl apply -f manifests/s3bucket.yaml  
+kubectl apply -f crossplane/provider-aws-config.yaml
 ```
-
+*Create AWS S3 bucket*
+```shell
+kubectl apply -f aws-cloud/s3-bucket.yaml  
+```
 **Verify Resource Status**
 ```shell
 kubectl get bucket
@@ -44,5 +52,8 @@ kubectl get bucket
 
 **Cleanup**
 ```shell
-kubectl delete -f s3bucket.yaml
+kubectl delete -f aws-cloud/s3-bucket.yaml
+```
+```shell
+minikube delete --all
 ```
